@@ -1,0 +1,54 @@
+
+import cv2
+import numpy as np
+
+cap = cv2.VideoCapture(0)
+
+objects = cv2.createBackgroundSubtractorMOG2()
+
+
+if (cap.isOpened() == True):
+    print('camera is is Opened')
+
+else:
+    print ('Error while trying to open camera. Plese check again...')
+
+# get the frame width and height
+frame_width = int(cap.get(3))
+frame_height = int(cap.get(4))
+
+print ('Width','Height', frame_width,frame_height)
+
+
+# read until end of video
+while(True):
+
+    # capture each frame of the video
+    ret, frame = cap.read()
+
+
+#     # add gaussian blurring to frame
+    blured = cv2.GaussianBlur(frame, (51, 51), 0)
+    
+#     # add black and white to frame
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+#     # add canny to blured frame
+    edge = cv2.Canny(blured, 50,50,edges=10)
+        
+#     # add mask to frame
+    mask = objects.apply(frame)
+
+        
+#         # display frame
+    cv2.imshow('orignal',frame)
+    cv2.imshow('blured Video', blured)
+    cv2.imshow('mask', mask)
+    cv2.imshow('gray',gray)
+    cv2.imshow('edge',edge)
+    
+
+
+#         # press `q` to exit
+    if cv2.waitKey(27) & 0xFF == ord('q'):
+        break
